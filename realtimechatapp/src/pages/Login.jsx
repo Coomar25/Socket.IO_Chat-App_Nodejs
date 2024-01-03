@@ -1,16 +1,18 @@
-
-export default Login;
+import { useContext } from "react";
 import { Alert, Button, Container } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
+  const { loginInfo, updateLoginInfo, loginUser, loginerror, isLoginLoading } =
+    useContext(AuthContext);
   return (
     <Container>
       <div className="registerContainer">
         <div className="registerForm">
-          <Form>
+          <Form onSubmit={loginUser}>
             <Form.Group
               as={Row}
               className="mb-3 text-white"
@@ -24,6 +26,12 @@ const Login = () => {
                   className="text-white"
                   plaintext
                   defaultValue="email@example.com"
+                  onChange={(e) => {
+                    updateLoginInfo({
+                      ...loginInfo,
+                      email: e.target.value,
+                    });
+                  }}
                 />
               </Col>
             </Form.Group>
@@ -37,18 +45,28 @@ const Login = () => {
                 Password
               </Form.Label>
               <Col sm="10">
-                <Form.Control type="password" placeholder="Password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    updateLoginInfo({
+                      ...loginInfo,
+                      password: e.target.value,
+                    });
+                  }}
+                />
               </Col>
             </Form.Group>
 
-            <Button className="mt-4" varient="primary" type="submit">
-              Register
-            </Button>
+            {loginerror?.error && (
+              <Alert className="mt-4" varient="danger">
+                {loginerror.message}
+              </Alert>
+            )}
 
-            <Alert className="mt-4" varient="danger">
-              {" "}
-              <p>An Error Occured</p>{" "}
-            </Alert>
+            <Button className="mt-4" varient="primary" type="submit">
+              {isLoginLoading ? "Logging In Please Wait" : "Login"}
+            </Button>
           </Form>
         </div>
       </div>
