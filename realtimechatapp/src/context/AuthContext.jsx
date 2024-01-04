@@ -1,8 +1,8 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { baseURL, postRequest } from "../utils/services";
 import Cookies from "js-cookie";
-export const AuthContext = createContext();
 
+export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [registerError, setRegisterError] = useState(null);
@@ -22,6 +22,7 @@ export const AuthContextProvider = ({ children }) => {
     password: "",
   });
 
+  console.log(loginInfo);
   // ========================================================For Registration
   const updateRegisterInfo = useCallback((info) => {
     setRegisterInfo(info);
@@ -48,8 +49,6 @@ export const AuthContextProvider = ({ children }) => {
           return setRegisterError(response.message);
         }
         setRegisterSuccess("Successfull", response.message);
-        localStorage.setItem("User", JSON.stringify(response));
-        setUser(response);
       } catch (error) {
         console.error("An error occurred during registration:", error);
         setRegisterError(
@@ -71,6 +70,8 @@ export const AuthContextProvider = ({ children }) => {
   const loginUser = useCallback(
     async (e) => {
       e.preventDefault();
+      console.log("When click on login button", loginInfo);
+
       try {
         setIsLoginLoading(true);
         const response = await postRequest("user/login", loginInfo);
@@ -78,12 +79,15 @@ export const AuthContextProvider = ({ children }) => {
           console.log("Error Tracking for login", response);
           return setLoginerror(response);
         }
-        Cookies.set("cooChatToken", response.token);
-        localStorage.setItem("User", JSON.stringify(response));
+        // Parse the JSON string into an object
+        const userObject = JSON.parse(JSON.stringify(response));
+        console.log("User Object after parsing", userObject.data);
+        Cookies.set("cooChatToken", userObject.token);
+        localStorage.setItem("User", JSON.stringify(userObject));
         setUser(response);
       } catch (error) {
-        console.error("An Error occured while logging in ", error);
-        setLoginerror(`An error occured while logginh in ${error}`);
+        console.error("An Error occurred while logging in ", error);
+        setLoginerror(`An error occurred while logging in ${error}`);
       } finally {
         setIsLoginLoading(false);
       }

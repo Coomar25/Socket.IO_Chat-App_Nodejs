@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { connectToMongoDb } from "./config/dbConnect.js";
 import { userRouter } from "./routes/userRouter.js";
+import { chatRouter } from "./routes/chatRouter.js";
+import { messageRouter } from "./routes/messageRouter.js";
 
 // Port Specify Gareko
 dotenv.config();
@@ -25,5 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user/", userRouter);
+app.use("/api/chats/", chatRouter);
+app.use("/api/messages/", messageRouter);
 
 connectToMongoDb();

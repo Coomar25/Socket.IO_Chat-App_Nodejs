@@ -53,12 +53,11 @@ export const login = async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
   res.json({
+    _id: findUser?._id,
+    name: findUser?.name,
+    username: findUser?.username,
+    email: findUser?.email,
     token: createJwtToken(findUser?._id),
-    user: {
-      _id: findUser?._id,
-      username: findUser?.username,
-      email: findUser?.email,
-    },
   });
 };
 
