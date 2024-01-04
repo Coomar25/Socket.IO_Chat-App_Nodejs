@@ -70,7 +70,7 @@ export const AuthContextProvider = ({ children }) => {
   const loginUser = useCallback(
     async (e) => {
       e.preventDefault();
-      console.log("When click on login button", loginInfo);
+      // console.log("When click on login button", loginInfo);
 
       try {
         setIsLoginLoading(true);
@@ -81,7 +81,7 @@ export const AuthContextProvider = ({ children }) => {
         }
         // Parse the JSON string into an object
         const userObject = JSON.parse(JSON.stringify(response));
-        console.log("User Object after parsing", userObject.data);
+        // console.log("User Object after parsing", userObject.data);
         Cookies.set("cooChatToken", userObject.token);
         localStorage.setItem("User", JSON.stringify(userObject));
         setUser(response);
