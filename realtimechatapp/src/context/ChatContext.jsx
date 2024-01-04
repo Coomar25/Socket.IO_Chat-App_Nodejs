@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { getRequest, postRequest } from "../utils/services";
 
 export const ChatContext = createContext();
@@ -6,9 +6,11 @@ export const ChatContextProvider = ({ children, user }) => {
   const [userChats, setUserChats] = useState([]);
   const [isuserchatloading, setIsuserchatloading] = useState(null);
   const [isuserchaterror, setisUserchaterror] = useState(null);
+  const [potentialChats, setPotentialsChats] = useState([]);
 
   console.log("from chat context login user id", user?._id);
 
+  // Getting from state management
   //   useEffect(() => {
   //     const getUserChats = async () => {
   //       const userId = user?._id;
@@ -29,6 +31,7 @@ export const ChatContextProvider = ({ children, user }) => {
   //   }, [user]);
   // console.log("Here is the response format", userChats);
 
+  // Getting from local storage
   useEffect(() => {
     const storedUserData = localStorage.getItem("User");
     if (storedUserData) {
@@ -37,11 +40,11 @@ export const ChatContextProvider = ({ children, user }) => {
       setisUserchaterror(null);
       getRequest(`chats/${user?._id}`)
         .then((response) => {
-          console.log("Here is the response format", response.data);
+          // console.log("Here is the response format", response.data);
           setIsuserchatloading(false);
           //   const userChats = [response.data];
           setUserChats([response.data]);
-          console.log("From ChatContext__ userChats is", userChats);
+          // console.log("From ChatContext__ userChats is", userChats);
           if (response.error) {
             setisUserchaterror(response);
           }
@@ -54,6 +57,58 @@ export const ChatContextProvider = ({ children, user }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const getUsers = async () => {
+      const response = await getRequest("user/getAllUsers");
+      if (response.error) {
+        return console.log("Error while fetching the users", response.message);
+      }
+      console.log(
+        "From getUsers Function in ChatContext usser?.id is",
+        user?._id,
+        "userChats",
+        userChats
+      );
+      const pChats = response.data.filter((u) => {
+        let isChatCreated = false;
+        if (user?._id === u._id) return false;
+
+        console.log("userChats in getUser function in ChatContext");
+        console.table(userChats);
+        if (userChats) {
+          isChatCreated = userChats?.some((chat) => {
+            console.log("table chatter indeses");
+            console.table(
+              chat.members[0] === u._id,
+              chat.members[0],
+              u._id,
+              user?._id
+            );
+            return chat.members[0] === u._id || chat.members[1] === u._id;
+          });
+        }
+
+        return !isChatCreated;
+      });
+      setPotentialsChats(pChats);
+      console.log("Get all users Data");
+      console.table(response.data);
+    };
+    getUsers();
+  }, []);
+
+  const createChat = useCallback(async (firstId, secondId) => {
+    const response = await postRequest(`chats`, {
+      firstId,
+      secondId,
+    });
+    if (response.error) {
+      return console.log("Error creating chat", response);
+    }
+
+    setUserChats((prev) => [...prev, response]);
+  }, []);
+
   return (
     <>
       <ChatContext.Provider
@@ -61,6 +116,8 @@ export const ChatContextProvider = ({ children, user }) => {
           userChats,
           isuserchaterror,
           isuserchatloading,
+          potentialChats,
+          createChat,
         }}
       >
         {children}

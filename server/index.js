@@ -16,7 +16,14 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173", // Update this to the origin of your frontend
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 // Server listen gareko
 app.listen(PORT, () => {
   console.log(`server is listening on port http://localhost:${PORT}`);

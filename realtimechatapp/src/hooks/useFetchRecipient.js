@@ -5,26 +5,71 @@ export const useFetchRecipientUser = (chat, user) => {
   const [recipientUser, setRecipientUser] = useState(null);
   const [error, setError] = useState(null);
 
-  console.log("From useFetchRecipeint chat attribute is", chat);
-  console.log("From useFetchRecipeint user attribute is", user);
-  let recipientId;
-  if (!user) {
-    const storedUserData = localStorage.getItem("User");
-    const storedUser = JSON.parse(storedUserData);
-    recipientId = chat?.members?.find((id) => id !== storedUser?._id);
-  } else {
-    recipientId = chat?.members?.find((id) => id !== user?._id);
-  }
-  console.log("lists of recipients id", recipientId);
-  console.log("chat", chat);
+  console.log("From useFetchRecipeint chat attribute is");
+  console.table(chat);
+  console.log("From useFetchRecipeint user attribute is");
+  console.table(user);
+  // by author
+  const recipientId = chat[0]?.members.find((id) => id !== user?._id);
+  console.log("recipientId in useFetchRecipient.js", recipientId);
+  useEffect(() => {
+    const getUser = async () => {
+      if (!recipientId) return null;
+      const response = await getRequest(`user/getuser/${recipientId}`);
+      if (response.error) {
+        return setError(error);
+      }
+      setRecipientUser(response);
+    };
+    getUser();
+  }, []);
+  //================================================================================
+  // let recipientId;
+  // const storedUserData = localStorage.getItem("User");
+  // const storedUser = JSON.parse(storedUserData);
+  // recipientId = chat?.members?.find((id) => id !== storedUser?._id);
+
+  // if (!user) {
+  //   recipientId = chat?.members?.find((id) => id !== storedUser?._id);
+  // } else {
+  //   recipientId = chat?.members?.find((id) => id !== user?._id);
+  // }
+  // console.log("lists of recipients id", recipientId);
+  // console.log("chat from useFetchRecipient.js");
+  // console.table(chat);
+
+  // ===============================================================================
+  // let recipientId;
+  // const storedUserData = localStorage.getItem("User");
+  // const storedUser = JSON.parse(storedUserData);
+
+  // if (!user) {
+  //   for (const chatObj of chat) {
+  //     recipientId = chatObj?.members?.find((id) => id !== storedUser?._id);
+  //     // if (recipientId) {
+  //     //   break;
+  //     // }
+  //   }
+  // } else {
+  //   for (const chatObj of chat) {
+  //     recipientId = chatObj?.members?.find((id) => id !== user?._id);
+  //   }
+  // }
+
+  // console.log("Recipient ID:", recipientId);
+  // console.log("Chat from useFetchRecipient.js");
+  // console.table(chat);
+
+  // ===============================================================================
+
   useEffect(() => {
     const getUser = async () => {
       if (!recipientId) return null;
       const response = await getRequest(`user/getuser/${recipientId}`);
       console.log(
-        "Fuccccckkkkk use fetch recipients hooks fetching the user details",
-        response.data
+        "Fuccccckkkkk use fetch recipients hooks fetching the user details"
       );
+      console.table(response.data);
 
       if (response.error) {
         return setError(error);
