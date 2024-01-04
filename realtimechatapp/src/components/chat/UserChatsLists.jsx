@@ -4,7 +4,8 @@ import avatar from "../../assets/avatar.svg";
 
 const UserChatsLists = ({ chat, user }) => {
   const { recipientUser } = useFetchRecipientUser(chat, user);
-  console.log("From a custom hook recipientUser", recipientUser);
+  console.log("From a custom hook recipientUser");
+  console.table(recipientUser);
   return (
     <>
       <Stack
@@ -27,7 +28,7 @@ const UserChatsLists = ({ chat, user }) => {
           <div className="date">12/12/2022</div>
 
           <div className="this-user-notifications">2</div>
-          <spam className="user-online"></spam>
+          <span className="user-online"></span>
         </div>
       </Stack>
     </>

@@ -32,10 +32,13 @@ export const postRequest = async (url, body) => {
     };
   }
 };
+
 export const getRequest = async (url) => {
   try {
     const response = await fetch(`${baseURL}/${url}`);
     const data = await response.json();
+
+    // console.log("Message from a get request", data);
 
     if (!response.ok) {
       let message = "An error occurred...........";
