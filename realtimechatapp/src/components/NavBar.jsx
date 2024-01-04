@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const NavBar = () => {
   const { user, logoutuser } = useContext(AuthContext);
+  console.log("user from navbar using authcontext", user?.name);
   return (
     <>
       <Navbar bg="dark" className="mb-4" style={{ height: "3.75rem" }}>
@@ -17,7 +18,7 @@ const NavBar = () => {
           </h2>
           <span className="text-warning">
             {" "}
-            {user ? `Logged in as ${user.user.name}` : "No User Logged in"}
+            {user ? `Logged in as ${user?.name}` : "No User Logged in"}
           </span>
           <Nav>
             <Stack direction="horizontal" gap={3}>
