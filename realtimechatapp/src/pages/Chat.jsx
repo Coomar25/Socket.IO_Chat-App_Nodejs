@@ -4,9 +4,10 @@ import { Container, Stack } from "react-bootstrap";
 import UserChatsLists from "../components/chat/UserChatsLists";
 import { AuthContext } from "../context/AuthContext";
 import PotentialChats from "../components/chat/PotentialChats";
+import ChatBox from "../components/chat/ChatBox";
 
 const Chat = () => {
-  const { userChats, isuserchaterror, isuserchatloading } =
+  const { userChats, isuserchaterror, isuserchatloading, updateCurrentChat } =
     useContext(ChatContext);
   const { user } = useContext(AuthContext);
   // console.log("group members chatters", userChats);
@@ -21,11 +22,12 @@ const Chat = () => {
             <Stack className="messages-box flex-grow-0 pe-3" gap={3}>
               {isuserchatloading && <p>Chat is loading.....</p>}
               {userChats.map((chat) => (
-                <div key={chat._id}>
+                <div key={chat._id} onClick={() => updateCurrentChat(chat)}>
                   <UserChatsLists chat={chat} user={user} />
                 </div>
               ))}
             </Stack>
+            <ChatBox />
           </Stack>
         ) : (
           <p>No chats available.</p>
