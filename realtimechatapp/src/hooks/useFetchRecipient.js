@@ -9,9 +9,15 @@ export const useFetchRecipientUser = (chat, user) => {
   console.table(chat);
   console.log("From useFetchRecipeint user attribute is");
   console.table(user);
+  console.log(
+    "Fuccccckkkkk use fetch recipients hooks fetching the recipient user"
+  );
+  console.table(recipientUser);
   // by author
-  const recipientId = chat[0]?.members.find((id) => id !== user?._id);
+  // const recipientId = chat[0]?.members.find((id) => id !== user?._id);
+  const recipientId = chat && chat[0]?.members.find((id) => id !== user?._id);
   console.log("recipientId in useFetchRecipient.js", recipientId);
+  // ========================================================================
   useEffect(() => {
     const getUser = async () => {
       if (!recipientId) return null;
@@ -22,7 +28,8 @@ export const useFetchRecipientUser = (chat, user) => {
       setRecipientUser(response);
     };
     getUser();
-  }, []);
+  }, [recipientId]);
+
   //================================================================================
   // let recipientId;
   // const storedUserData = localStorage.getItem("User");
@@ -61,23 +68,6 @@ export const useFetchRecipientUser = (chat, user) => {
   // console.table(chat);
 
   // ===============================================================================
-
-  useEffect(() => {
-    const getUser = async () => {
-      if (!recipientId) return null;
-      const response = await getRequest(`user/getuser/${recipientId}`);
-      console.log(
-        "Fuccccckkkkk use fetch recipients hooks fetching the user details"
-      );
-      console.table(response.data);
-
-      if (response.error) {
-        return setError(error);
-      }
-      setRecipientUser(response);
-    };
-    getUser();
-  }, []);
 
   return { recipientUser };
 };
