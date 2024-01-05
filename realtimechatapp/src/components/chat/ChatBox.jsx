@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
@@ -11,6 +11,11 @@ const ChatBox = () => {
     useContext(ChatContext);
   const { recipientUser } = useFetchRecipientUser(currentChat, user);
   const [textMessage, setTextMessage] = useState("");
+  // Scroll to buttom when new message appears using useRef
+  const scroll = useRef();
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behaviour: "smooth" });
+  }, [messages]);
 
   console.log("In chatbox component checking currentChat", currentChat);
   console.log(
@@ -53,6 +58,7 @@ const ChatBox = () => {
                       ? "message self align-self-end flex-grow-0"
                       : "message align-self-start flex-grow-0 "
                   }`}
+                  ref={scroll}
                 >
                   <span>{message.text}</span>
                   <span>{formatDate(message.createdAt)}</span>

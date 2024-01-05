@@ -1,11 +1,19 @@
 import { Stack } from "react-bootstrap";
 import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
 import avatar from "../../assets/avatar.svg";
+import { useContext } from "react";
+import { ChatContext } from "../../context/ChatContext";
 
 const UserChatsLists = ({ chat, user }) => {
   const { recipientUser } = useFetchRecipientUser(chat, user);
+  const { onlineUsers } = useContext(ChatContext);
   console.log("From a custom hook recipientUser");
   console.table(recipientUser);
+
+  const isOnline = onlineUsers?.some(
+    (user) => user?.userId === recipientUser?.data?._id
+  );
+
   return (
     <>
       <Stack
@@ -28,7 +36,7 @@ const UserChatsLists = ({ chat, user }) => {
           <div className="date">12/12/2022</div>
 
           <div className="this-user-notifications">2</div>
-          <span className="user-online"></span>
+          {isOnline && <span className="user-online"></span>}
         </div>
       </Stack>
     </>
