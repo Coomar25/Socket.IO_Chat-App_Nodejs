@@ -16,7 +16,9 @@ export const ChatContextProvider = ({ children, user }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [newMesssage, setNewMessage] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
+  console.log("usserChars in ChatContext Component", userChats);
   console.log("currentchat", currentChat);
   console.log("messages", messages);
   console.log("messageerror", messageError);
@@ -25,6 +27,7 @@ export const ChatContextProvider = ({ children, user }) => {
   console.log("from chat context login user id", user?._id);
   console.log("Socket server I'm getting this", socket);
   console.log("Online users lists here", onlineUsers);
+  console.log("Notification lists here", notifications);
 
   // initialinz the socket
   useEffect(() => {
@@ -43,9 +46,26 @@ export const ChatContextProvider = ({ children, user }) => {
       setOnlineUsers(response);
     });
 
-    // return () => {
-    //   socket.off("getOnlineUsers");
-    // };
+    // For notification listen notifiaction when socket changes in dependency
+    socket.on("getNotification", (res) => {
+      console.log("Notification from response buddy", res.senderId);
+      console.log("Notification from response buddy second", res);
+      const isChatOpen = userChats.length > 0;
+      console.log(
+        "Notification from response buddy second isChatOpen",
+        isChatOpen
+      );
+
+      if (isChatOpen) {
+        setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
+      } else {
+        setNotifications((prev) => [res, ...prev]);
+      }
+    });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    };
   }, [socket]);
 
   // =======================================================================================================================================
@@ -62,7 +82,7 @@ export const ChatContextProvider = ({ children, user }) => {
     socket.emit("sendMessage", { ...newMesssage, recipientId });
   }, [newMesssage]);
 
-  // receive message from socket
+  // receive message from socket and later notifation tooo
 
   useEffect(() => {
     if (socket === null) return;
@@ -73,10 +93,11 @@ export const ChatContextProvider = ({ children, user }) => {
       console.log("kumar unstop");
       setMessages((prev) => [...prev, res]);
     });
+
     return () => {
       socket.off("getMessage");
     };
-  }, [messages]);
+  }, [messages, socket]);
 
   // =======================================================================================================================================
 
@@ -250,6 +271,7 @@ export const ChatContextProvider = ({ children, user }) => {
           messageError,
           sendTextMessage,
           onlineUsers,
+          notifications,
         }}
       >
         {children}
