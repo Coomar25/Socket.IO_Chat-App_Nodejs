@@ -52,6 +52,10 @@ export const login = async (req, res) => {
   if (!findUser || !(await findUser.isPasswordMatched(password))) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
+  res.cookie("yourTokenCookieName", token, {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
   res.json({
     _id: findUser?._id,
     name: findUser?.name,
