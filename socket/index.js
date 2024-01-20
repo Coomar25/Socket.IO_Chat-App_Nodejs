@@ -9,7 +9,6 @@ let onlineUsers = [];
 io.on("connection", (socket) => {
   console.log("New Connection", socket.id);
   //   listen to connection
-
   socket.on("addNewUser", (userId) => {
     if (!onlineUsers.some((user) => user.userId === userId)) {
       onlineUsers.push({

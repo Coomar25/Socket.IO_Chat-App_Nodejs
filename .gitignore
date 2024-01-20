@@ -1,0 +1,11 @@
+
+# .gitignore
+
+# Ignore node_modules inside the socket folder
+socket/node_modules/
+
+# Ignore node_modules inside the client folder
+client/node_modules/
+
+zx-six_pack/six_pack_socket/node_modules/
+zx-six_pack/six_pack_client/node_modules/
